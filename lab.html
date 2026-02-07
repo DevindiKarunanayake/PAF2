@@ -1,0 +1,100 @@
+CREATE TABLE Department(
+DeptNo VARCHAR(20) PRIMARY KEY,
+DeptName CHAR(20),
+Location CHAR(20)
+);
+
+CREATE TABLE Employee(
+EmpNo VARCHAR(20) PRIMARY KEY,
+fname CHAR(20),
+lname CHAR(20),
+address VARCHAR(20),
+salary INTEGER,
+DeptNo varchar(20),
+FOREIGN KEY (DeptNo) REFERENCES Department(DeptNo)
+ );
+
+CREATE TABLE Project(
+ProjNo CHAR(5) PRIMARY KEY,
+Project_Name VARCHAR(20),
+DeptNo varchar(20), 
+FOREIGN KEY (DeptNo) REFERENCES Department(DeptNo)
+  );
+
+CREATE TABLE Works_On(
+EmpNo VARCHAR(20),
+ProjNo CHAR(5),
+DateWorked DATE,
+Hours NUMBER(2),
+  PRIMARY KEY (EmpNo,ProjNo,DateWorked),
+  FOREIGN KEY (EmpNo) REFERENCES Employee(EmpNo),
+  FOREIGN KEY (ProjNo) REFERENCES Project(ProjNo)
+);
+
+
+
+INSERT INTO Employee VALUES ('Emp01', 'John', 'Scott', 'Mysore', 45000, '003');
+INSERT INTO Employee VALUES ('Emp02', 'James', 'Smith', 'Bangalore', 50000, '005');
+INSERT INTO Employee VALUES ('Emp03', 'Edward', 'Hedge', 'Bangalore', 65000, '002');
+INSERT INTO Employee VALUES ('Emp04', 'Santhosh', 'Kumar', 'Delhi', 80000, '002');
+INSERT INTO Employee VALUES ('Emp05', 'Veena', 'M', 'Mumbai', 45000, '004');
+
+INSERT INTO Department VALUES (001, 'Accounts', 'Bangalore');
+INSERT INTO Department VALUES (002, 'IT', 'Mumbai');
+INSERT INTO Department VALUES (003, 'ECE', 'Mumbai');
+INSERT INTO Department VALUES (004, 'ISE', 'Mumbai');
+INSERT INTO Department VALUES (005, 'CSE', 'Delhi');
+
+INSERT INTO Project VALUES ('P01', 'IOT', 005);
+INSERT INTO Project VALUES ('P02', 'Cloud', 005);
+INSERT INTO Project VALUES ('P03', 'BankMgmt', 004);
+INSERT INTO Project VALUES ('P04', 'Sensors', 003);
+INSERT INTO Project VALUES ('P05', 'BigData', 002);
+
+INSERT INTO Works_On VALUES ('Emp02', 'P03','02-10-2018', 4);
+INSERT INTO Works_On VALUES ('Emp01', 'P02','22-01-2014', 13);
+INSERT INTO Works_On VALUES ('Emp02', 'P02','19-06-2020', 15);
+INSERT INTO Works_On VALUES ('Emp02', 'P01','11-10-2018', 10);
+INSERT INTO Works_On VALUES ('Emp01', 'P04','02-10-2018', 6);
+INSERT INTO Works_On VALUES ('Emp02', 'P01','02-10-2018', 18);
+INSERT INTO Works_On VALUES ('Emp01', 'P05','02-10-2018', 7);
+
+SELECT * FROM Employee
+SELECT * FROM Department
+SELECT * FROM Project
+SELECT * FROM Works_On
+
+SELECT E.fname, E.lname, E.address
+FROM Employee E, Department D
+WHERE DeptNo = D.DeptNo
+AND D.DeptName = 'IT';
+
+SELECT salary
+FROM Employee;
+
+SELECT DISTINCT salary
+FROM Employee;
+
+SELECT E.fname, E.lname
+FROM Employee E, Works_On W
+WHERE E.EmpNo = W.EmpNo
+AND E.DeptNo = '005'
+AND W.ProjNo = 'P01'
+AND W.Hours > 10;
+
+SELECT D.DeptNo, E.lname, E.fname, P.Project_Name
+FROM Employee E, Department D, Project P, Works_On W
+WHERE E.DeptNo = D.DeptNo
+AND E.EmpNo = W.EmpNo
+AND W.ProjNo = P.ProjNo
+ORDER BY D.DeptNo, E.lname, E.fname;
+
+SELECT E.EmpNo, E.fname, E.lname,
+       E.salary * 1.10 AS Increased_Salary
+FROM Employee E, Project P, Works_On W
+WHERE E.EmpNo = W.EmpNo
+AND W.ProjNo = P.ProjNo
+AND P.Project_Name = 'IOT';
+
+
+
